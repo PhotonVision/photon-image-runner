@@ -20,7 +20,7 @@ inputs:
 outputs:
   image:
     description: 'Path to modified image'
-    value: ${{ steps.step_name.outputs.image }}
+    value: ${{ steps.get_image.outputs.image }}
 runs:
   using: 'composite'
   steps:
@@ -31,6 +31,28 @@ runs:
       id: get_image
     - name: Mount image
       run: |
-          sudo --preserve-env=GITHUB_OUTPUT bash "${GITHUB_ACTION_PATH}/mount_image.sh" "${{ steps.get_image.outputs.image }}" "${{ inputs.additional_mb }}" "${{ inputs.root_partition }}"
+          sudo --preserve-env bash "${GITHUB_ACTION_PATH}/mount_image.sh" "${{ steps.get_image.outputs.image }}" "${{ inputs.additional_mb }}" "${{ inputs.root_partition }}"
       shell: bash
       id: mount_image
+    - name: Run commands
+      run: |
+          env
+          echo "Running the commands"
+          chroot_scriptdir=/tmp/build
+          scriptdir=${{ env.rootdir }}${chroot_scriptdir}
+          sudo mkdir --parents "${scriptdir}"
+          sudo mount --bind "${{ github.workspace }}" "${scriptdir}"
+
+          cat >> "${scriptdir}/commands.sh" << EOF
+          #!/bin/bash
+          set -euo pipefail
+          export DEBIAN_FRONTEND=noninteractive
+          cd "${chroot_scriptdir}"
+          ${{ inputs.commands }}
+          EOF
+
+          sudo chmod +x "${scriptdir}/commands.sh"
+
+          sudo --preserve-env chroot "${{ env.rootdir }}" bash -c "${chroot_scriptdir}/commands.sh"
+      shell: bash
+      id: run_commands

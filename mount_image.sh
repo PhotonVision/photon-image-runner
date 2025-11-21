@@ -14,7 +14,7 @@ if [[ ${additional_mb} -gt 0 ]]; then
 fi
 
 loopdev=$(losetup --find --show --partscan ${image})
-echo "loopdev=${loopdev}" >> $GITHUB_OUTPUT
+echo "loopdev=${loopdev}" >> "$GITHUB_ENV"
 
 part_type=$(blkid -o value -s PTTYPE "${loopdev}")
 echo "Image is using ${part_type} partition table"
@@ -36,14 +36,16 @@ echo "Partitions in the mounted image:"
 lsblk "${loopdev}"
 
 rootdev="${loopdev}p${rootpartition}"
+echo "rootdev=${rootdev}" >> "$GITHUB_ENV"
+echo "Root device is: ${rootdev}"
 
 rootdir="./rootfs"
 rootdir="$(realpath ${rootdir})"
-echo "Root directory will be: ${rootdir}"
 
 mkdir --parents ${rootdir}
-echo "rootdir=${rootdir}" >> "$GITHUB_OUTPUT"
 mount "${rootdev}" "${rootdir}"
+echo "rootdir=${rootdir}" >> "$GITHUB_ENV"
+echo "Root directory is: ${rootdir}"
 
 # Set up the environment
 mount -t proc /proc "${rootdir}/proc"

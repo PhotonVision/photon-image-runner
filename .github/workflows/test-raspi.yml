@@ -19,7 +19,9 @@ jobs:
               echo "Testing Raspberry Pi image"
               uname -a
               lsblk
-              cat /proc/cpuinfo
+              echo "${loopdev}"
+              ls -l
+              env
 
 
 
