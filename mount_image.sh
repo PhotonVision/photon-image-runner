@@ -18,6 +18,7 @@ loopdev=$(losetup --find --show --partscan ${image})
 echo "loopdev=${loopdev}" >> "$GITHUB_ENV"
 
 part_type=$(blkid -o value -s PTTYPE "${loopdev}")
+echo "part_type=${part_type}" >> "$GITHUB_ENV"
 echo "Image is using ${part_type} partition table"
 
 if [[ ${additional_mb} -gt 0 ]]; then
