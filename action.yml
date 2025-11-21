@@ -44,7 +44,9 @@ runs:
 
           cat >> "${scriptdir}/commands.sh" << EOF
           #!/bin/bash
-          set -euo pipefail
+          # set -exo pipefail
+          # export SHELLOPTS
+          # export BASHOPTS
           cd "${chroot_scriptdir}"
           ${{ inputs.commands }}
           EOF
