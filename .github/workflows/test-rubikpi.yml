@@ -1,4 +1,4 @@
-name: 'Test modifying a Raspberry Pi image'
+name: 'Test modifying a Rubik Pi image'
 on:
   push:
     branches:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
-      - uses: photonvision/photon-image-runner@HEAD
+      - uses: ./
         with:
           image_url: https://people.canonical.com/~platform/images/qualcomm-iot/rubikpi3/ubuntu-server-24.04/x00/ubuntu-24.04-preinstalled-server-arm64+rubikpi3-20250912-127.yaml
           minimum_free_mb: 2000
@@ -22,15 +22,15 @@ jobs:
               lsblk
               echo "${loopdev}"
         id: build_image
-      - name: Compress image
-        run: |
-            sudo xz -T 0 -v ${{ steps.build_image.outputs.image }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.build_image.outputs.image }}.xz
-          path: ${{ steps.build_image.outputs.image }}.xz
-          compression-level: 0
-          if-no-files-found: error
-          retention-days: 1
+      # - name: Compress image
+      #   run: |
+      #       sudo xz -T 0 -v ${{ steps.build_image.outputs.image }}
+      # - uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ steps.build_image.outputs.image }}.xz
+      #     path: ${{ steps.build_image.outputs.image }}.xz
+      #     compression-level: 0
+      #     if-no-files-found: error
+      #     retention-days: 1
 
 

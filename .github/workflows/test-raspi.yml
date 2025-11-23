@@ -26,7 +26,7 @@ jobs:
       - name: Compress image
         run: |
             sudo xz -T 0 -v ${{ steps.build_image.outputs.image }}
-      - uses: actions/upload-artifact@v4
+      - uses: ./
         with:
           name: ${{ steps.build_image.outputs.image }}.xz
           path: ${{ steps.build_image.outputs.image }}.xz
