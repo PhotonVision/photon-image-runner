@@ -10,7 +10,7 @@ root_location=$4
 # Prepare and mount the image
 ####
 
-case ${root_location} in
+case ${root_location,,} in
     partition* )
         rootpartition=${root_location#*=}
         loopdev=$(losetup --find --show --partscan ${image})
@@ -86,6 +86,7 @@ df --block-size=M "${rootdir}"
 # Set up the environment
 mount -t proc /proc "${rootdir}/proc"
 mount -t sysfs /sys "${rootdir}/sys"
+mount -t tmpfs /tmpfs "${rootdir}/run"
 mount --rbind /dev "${rootdir}/dev"
 
 # Temporarily replace resolv.conf for networking
