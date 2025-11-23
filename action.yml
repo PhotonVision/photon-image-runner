@@ -22,6 +22,10 @@ inputs:
     description: 'Partition number for root'
     required: false
     default: '2'
+  root_location:
+    description: 'Location of the root as either "partition=X" or "offset=XXX"'
+    required: false
+    default: 'partition=2'
 
 outputs:
   image:
@@ -37,11 +41,11 @@ runs:
       shell: bash
       id: get_image
 
-    # - name: Mount image
-    #   run: |
-    #       sudo --preserve-env bash "${GITHUB_ACTION_PATH}/mount_image.sh" "${{ steps.get_image.outputs.image }}" "${{ inputs.additional_mb }}" "${{ inputs.minimum_free_mb }}" "${{ inputs.root_partition }}"
-    #   shell: bash
-    #   id: mount_image
+    - name: Mount image
+      run: |
+          sudo --preserve-env bash "${GITHUB_ACTION_PATH}/mount_image.sh" "${{ steps.get_image.outputs.image }}" "${{ inputs.additional_mb }}" "${{ inputs.minimum_free_mb }}" "${{ inputs.root_location }}"
+      shell: bash
+      id: mount_image
 
     # - name: Run commands
     #   run: |

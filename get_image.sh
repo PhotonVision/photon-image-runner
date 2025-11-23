@@ -1,8 +1,9 @@
 #!/bin/bash
-set -euxo pipefail
+set -euo pipefail
 
 url=$1
-download_path="${RUNNER_TEMP}/image"
+download_path="/image"
+echo "download_path=${download_path}" >> "$GITHUB_ENV"
 mkdir --parent "${download_path}"
 
 image=""
