@@ -33,7 +33,7 @@ runs:
   steps:
     - name: Get base image
       run: |
-          ${GITHUB_ACTION_PATH}/get_image.sh ${{ inputs.image_url }}
+          sudo --preserve-env bash ${GITHUB_ACTION_PATH}/get_image.sh ${{ inputs.image_url }}
       shell: bash
       id: get_image
 
