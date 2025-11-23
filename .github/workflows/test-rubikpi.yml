@@ -24,15 +24,26 @@ jobs:
               lsblk
               echo "${loopdev}"
         id: build_image
-      # - name: Compress image
-      #   run: |
-      #       sudo xz -T 0 -v ${{ steps.build_image.outputs.image }}
-      # - uses: actions/upload-artifact@v4
-      #   with:
-      #     name: ${{ steps.build_image.outputs.image }}.xz
-      #     path: ${{ steps.build_image.outputs.image }}.xz
-      #     compression-level: 0
-      #     if-no-files-found: error
-      #     retention-days: 1
+      - name: Compress image
+        run: |
+            imagedir=$(dirname ${{ steps.build_image.outputs.image }})
+            tardir=${RUNNER_TEMP}/photonvision_rubikpi3
+            mkdir --parents ${tardir}
+            if ls ${imagedir}*.tar.gz 1>/dev/null 2>&1; then
+              sudo tar -xzf ${imagedir}*.tar.gz -C ${tardir}
+            fi
+            sudo mv ${imagedir}/rawprogram*.xml ${tardir}/ 2>/dev/null || true
+            sudo mv ${imagedir}/dtb.bin ${tardir}/ 2>/dev/null || true
+            sudo mv ${imagedir}/*.img ${tardir}/ 2>/dev/null || true
+            sudo find ${tardir} -mindepth 2 -type f -exec mv {} ${tardir}/ \;
+            sudo find ${tardir} -mindepth 1 -type d -empty -delete
+            sudo tar -I 'xz -T0' -cf ./photonvision_rubikpi3.tar.xz ${tardir} --checkpoint=10000 --checkpoint-action=echo='%T'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: photonvision_rubikpi3.tar.xz
+          path: ./photonvision_rubikpi3.tar.xz
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 1
 
 

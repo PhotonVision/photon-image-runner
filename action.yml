@@ -75,6 +75,6 @@ runs:
 
     - name: Clean up and pack image
       run: |
-          sudo --preserve-env bash ${GITHUB_ACTION_PATH}/pack_image.sh "${{ steps.get_image.outputs.image }}" $"{{ inputs.shrink_image }}"
+          sudo --preserve-env bash ${GITHUB_ACTION_PATH}/pack_image.sh "${{ steps.get_image.outputs.image }}" "${{ inputs.shrink_image }}"
       shell: bash
       id: pack_image
