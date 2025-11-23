@@ -53,6 +53,3 @@ if [[ ${shrink,,} = y* ]]; then
 fi
 
 losetup --detach "${loopdev}"
-
-chmod --recursive +w $(dirname ${image})
-ls -la $(dirname ${image})

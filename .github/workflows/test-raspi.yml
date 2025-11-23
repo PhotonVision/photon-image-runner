@@ -25,7 +25,7 @@ jobs:
         id: build_image
       - name: Compress image
         run: |
-            xz -T 0 -v ${{ steps.build_image.outputs.image }}
+            sudo xz -T 0 -v ${{ steps.build_image.outputs.image }}
       - uses: actions/upload-artifact@v4
         with:
           name: raspi.img.xz

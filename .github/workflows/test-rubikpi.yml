@@ -30,14 +30,14 @@ jobs:
             tardir=${RUNNER_TEMP}/photonvision_rubikpi3
             mkdir --parents ${tardir}
             if ls ${imagedir}*.tar.gz 1>/dev/null 2>&1; then
-              tar -xzf ${imagedir}*.tar.gz -C ${tardir}
+              sudo tar -xzf ${imagedir}*.tar.gz -C ${tardir}
             fi
-            mv ${imagedir}/rawprogram*.xml ${tardir}/ 2>/dev/null || true
-            mv ${imagedir}/dtb.bin ${tardir}/ 2>/dev/null || true
-            mv ${imagedir}/*.img ${tardir}/ 2>/dev/null || true
-            find ${tardir} -mindepth 2 -type f -exec mv {} ${tardir}/ \;
-            find ${tardir} -mindepth 1 -type d -empty -delete
-            tar -I 'xz -T0' -cf ./photonvision_rubikpi3.tar.xz ${tardir} --checkpoint=10000 --checkpoint-action=echo='%T'
+            sudo mv ${imagedir}/rawprogram*.xml ${tardir}/ 2>/dev/null || true
+            sudo mv ${imagedir}/dtb.bin ${tardir}/ 2>/dev/null || true
+            sudo mv ${imagedir}/*.img ${tardir}/ 2>/dev/null || true
+            sudo find ${tardir} -mindepth 2 -type f -exec mv {} ${tardir}/ \;
+            sudo find ${tardir} -mindepth 1 -type d -empty -delete
+            sudo tar -I 'xz -T0' -cf ./photonvision_rubikpi3.tar.xz ${tardir} --checkpoint=10000 --checkpoint-action=echo='%T'
       - uses: actions/upload-artifact@v4
         with:
           name: photonvision_rubikpi3.tar.xz
