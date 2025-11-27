@@ -16,7 +16,7 @@ fi
 
 umount --recursive "${rootdir}"
 
-if [[ ${shrink,,} = y* ]]; then
+if [[ ${shrink,,} = y* && ${rootpartition} -gt 0 ]]; then
     echo "Resizing root filesystem to minimal size."
     e2fsck -v -f -p -E discard "${rootdev}"
     resize2fs -M "${rootdev}"
