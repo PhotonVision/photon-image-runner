@@ -24,6 +24,7 @@ jobs:
               echo "${loopdev}"
               echo "/boot contents:"
               ls -la /boot
+              touch /boot/photon-image-modifier-was-here
         id: build_image
       - name: Compress image
         run: |
