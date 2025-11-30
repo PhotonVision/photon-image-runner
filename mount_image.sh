@@ -23,20 +23,25 @@ case ${root_location,,} in
         fi
         loopdev=$(losetup --find --show --partscan ${image})
         rootdev="${loopdev}p${rootpartition}"
-        bootdev="${loopdev}p${bootpartition}"
     ;;
     offset* )
         rootpartition=0
+        bootpartition=
         rootoffset=${root_location#*=}
         loopdev=$(losetup --find --show --offset=${rootoffset} ${image})
         rootdev="${loopdev}"
-        bootdev=
     ;;
     * ) 
         echo "Don't understand value for root_location: ${root_location}"
         exit 1
     ;;
 esac
+
+if [[ -n ${bootpartition} ]]; then
+    bootdev="${loopdev}p${bootpartition}"
+else
+    bootdev=
+fi   
 
 echo "loopdev=${loopdev}" >> "$GITHUB_ENV"
 echo "rootpartition=${rootpartition}" >> "$GITHUB_ENV"
