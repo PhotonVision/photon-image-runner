@@ -30,7 +30,7 @@ case ${root_location,,} in
         rootoffset=${root_location#*=}
         loopdev=$(losetup --find --show --offset=${rootoffset} ${image})
         rootdev="${loopdev}"
-        bootdev=""
+        bootdev=
     ;;
     * ) 
         echo "Don't understand value for root_location: ${root_location}"
@@ -43,7 +43,7 @@ echo "rootpartition=${rootpartition}" >> "$GITHUB_ENV"
 echo "rootdev=${rootdev}" >> "$GITHUB_ENV"
 echo "bootdev=${bootdev}" >> "$GITHUB_ENV"
 echo "Root device is: ${rootdev}"
-echo "Boot device is: ${bootdev:=UNSET}"
+echo "Boot device is: ${bootdev:-UNSET}"
 
 echo "Partitions in the mounted image:"
 lsblk "${loopdev}"
@@ -92,7 +92,7 @@ mount "${rootdev}" "${rootdir}"
 echo "rootdir=${rootdir}" >> "$GITHUB_ENV"
 echo "Root directory is: ${rootdir}"
 
-if [[ -z ${bootdev} ]]; then
+if [[ -n ${bootdev} ]]; then
     [ ! -d "${rootdir}/boot" ] && mkdir "${rootdir}/boot"
     mount "${bootdev}" "${rootdir}/boot"
 fi
