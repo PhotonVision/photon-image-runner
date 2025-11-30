@@ -11,12 +11,12 @@ bootpartition=$5
 # Prepare and mount the image
 ####
 
-case ${root_location,,} in
+case "${root_location,,}" in
     partition* )
         rootpartition=${root_location#*=}
-        if [[ ${rootpartition} = ${bootpartition} ]]; then
+        if [[ "${rootpartition}" = "${bootpartition}" ]]; then
             echo "Boot partition cannot be equal to root partition"
-            if [ "x$bootpartition" = "x1" ]; then
+            if [ "${bootpartition}" = "1" ]; then
                 echo "Forgot to unset bootpartition ?"
             fi
             exit 1
@@ -37,7 +37,7 @@ case ${root_location,,} in
     ;;
 esac
 
-if [[ -n ${bootpartition} ]]; then
+if [[ -n "${bootpartition}" ]]; then
     bootdev="${loopdev}p${bootpartition}"
 else
     bootdev=
@@ -97,7 +97,7 @@ mount "${rootdev}" "${rootdir}"
 echo "rootdir=${rootdir}" >> "$GITHUB_ENV"
 echo "Root directory is: ${rootdir}"
 
-if [[ -n ${bootdev} ]]; then
+if [[ -n "${bootdev}" ]]; then
     [ ! -d "${rootdir}/boot" ] && mkdir "${rootdir}/boot"
     mount "${bootdev}" "${rootdir}/boot"
 fi

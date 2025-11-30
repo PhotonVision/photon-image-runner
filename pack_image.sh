@@ -11,7 +11,7 @@ if [[ -e "${rootdir}/etc/resolv.conf.bak" ]]; then
     mv "${rootdir}/etc/resolv.conf.bak" "${rootdir}/etc/resolv.conf"
 fi
 
-if [[ -n ${bootdev} ]]; then
+if [[ -n "${bootdev}" ]]; then
     echo "Zero filling empty space on boot partition"
     (cat /dev/zero > "${rootdir}/boot/zeros" 2>/dev/null || true); sync; rm "${rootdir}/boot/zeros";
     umount "${rootdir}/boot"
