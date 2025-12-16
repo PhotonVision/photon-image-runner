@@ -43,7 +43,7 @@ runs:
       run: |
           if [ -f "${{ inputs.image_url }}" ]; then
               echo "Using local file as image: ${{ inputs.image_url }}"
-              echo "::set-output name=image::${{ inputs.image_url }}"
+              echo "image=${{ inputs.image_url }}" >> $GITHUB_OUTPUT
               exit 0
           fi
           echo "Downloading image from URL: ${{ inputs.image_url }}"
