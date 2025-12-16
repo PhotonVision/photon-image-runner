@@ -31,6 +31,9 @@ jobs:
         uses: ./  # photonvision/photon-image-runner@HEAD
         with:
           image_url: ${{ steps.build_image.outputs.image }}
+          root_location: "offset=569376768"
+          shrink_image: "no"
+          boot_partition: ""
           commands: |
               echo "Testing file access Rubik Pi tar image"
               uname -a
