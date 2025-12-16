@@ -26,9 +26,22 @@ jobs:
               ls -la /boot
               touch /boot/photon-image-modifier-was-here
         id: build_image
+      - name: Test using image file
+        uses: ./  # photonvision/photon-image-runner@HEAD
+        with:
+          image_url: ${{ steps.build_image.outputs.image }}
+          commands: |
+              echo "Testing file access Raspberry Pi image"
+              uname -a
+              lsblk
+              echo "/boot contents:"
+              ls -la /boot
+              touch /boot/photon-image-modifier-file-was-here
+
       - name: Compress image
         run: |
-            sudo xz -T 0 -v ${{ steps.build_image.outputs.image }}
+            sudo xz -T 0 -v -k ${{ steps.build_image.outputs.image }}
+            
       - uses: actions/upload-artifact@v4
         with:
           name: raspi.img.xz

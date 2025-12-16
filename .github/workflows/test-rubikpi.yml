@@ -25,6 +25,19 @@ jobs:
               lsblk
               echo "${loopdev}"
         id: build_image
+
+      - name: Test using image file
+        uses: ./  # photonvision/photon-image-runner@HEAD
+        with:
+          image_url: ${{ steps.build_image.outputs.image }}
+          commands: |
+              echo "Testing file access Rubik Pi image"
+              uname -a
+              lsblk
+              echo "/boot contents:"
+              ls -la /boot
+              touch /boot/photon-image-modifier-file-was-here
+
       - name: Compress image
         run: |
             imagedir=$(dirname ${{ steps.build_image.outputs.image }})
