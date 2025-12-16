@@ -3,16 +3,16 @@ description: 'Action to modify an os image, targeted at coprocessor images for P
 
 inputs:
   image_url:
-    description: 'The url for the base image'
+    description: 'The url for the base image. If it is a local file, provide the file path'
     required: true
     default: ''
   additional_mb:
     description: 'Amount (in MB) to increase the size of the image'
-    reqiured: false
+    required: false
     default: 0
   minimum_free_mb:
     description: 'Amount (in MB) of free space that should be available for commands'
-    reqiured: false
+    required: false
     default: 0
   commands:
     description: 'The commands to run in the image'
@@ -28,7 +28,7 @@ inputs:
     default: 'partition=2'
   shrink_image:
     description: 'Make the output image file as small as possible'
-    reqiured: false
+    required: false
     default: 'yes'
 
 outputs:
@@ -41,6 +41,12 @@ runs:
   steps:
     - name: Get base image
       run: |
+          if [ -f "${{ inputs.image_url }}" ]; then
+              echo "Using local file as image: ${{ inputs.image_url }}"
+              echo "::set-output name=image::${{ inputs.image_url }}"
+              exit 0
+          fi
+          echo "Downloading image from URL: ${{ inputs.image_url }}"
           sudo --preserve-env bash ${GITHUB_ACTION_PATH}/get_image.sh ${{ inputs.image_url }}
       shell: bash
       id: get_image
