@@ -12,9 +12,6 @@ image=""
 case ${url} in
     file://* )
         echo "Using local file as image: ${url}"
-        # if [[ ! "${url#file://}" -ef "${download_path}/$(basename ${url})" ]]; then
-        #     cp "${url#file://}" ${download_path}
-        # fi
         image="${url#file://}"
     ;;
     http?(s)://*.yam?(l) )
