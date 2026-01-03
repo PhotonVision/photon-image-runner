@@ -1,5 +1,6 @@
 #!/bin/bash
 set -euxo pipefail
+shopt -s extglob
 
 url=$1
 download_path="${RUNNER_TEMP}/image"
