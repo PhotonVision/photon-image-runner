@@ -41,12 +41,12 @@ runs:
   steps:
     - name: Get base image
       run: |
-          if [ -f "${{ inputs.image_url }}" ]; then
-              echo "Using local file as image: ${{ inputs.image_url }}"
-              echo "image=${{ inputs.image_url }}" >> $GITHUB_OUTPUT
-              exit 0
-          fi
-          echo "Downloading image from URL: ${{ inputs.image_url }}"
+          # if [ -f "${{ inputs.image_url }}" ]; then
+          #     echo "Using local file as image: ${{ inputs.image_url }}"
+          #     echo "image=${{ inputs.image_url }}" >> $GITHUB_OUTPUT
+          #     exit 0
+          # fi
+          # echo "Downloading image from URL: ${{ inputs.image_url }}"
           sudo --preserve-env bash ${GITHUB_ACTION_PATH}/get_image.sh ${{ inputs.image_url }}
       shell: bash
       id: get_image
