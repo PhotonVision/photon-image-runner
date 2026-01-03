@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./
         with:
           image_url: https://github.com/PhotonVision/photon-image-modifier/releases/download/v2026.0.4/photonvision_rubikpi3.tar.xz
@@ -55,7 +55,7 @@ jobs:
             echo "After move"
             ls -la ${tardir}
             sudo tar -I 'xz -T0' -cf ./photonvision_rubikpi3_fromTAR.tar.xz ${tardir} --checkpoint=10000 --checkpoint-action=echo='%T'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: photonvision_rubikpi3_fromTAR.tar.xz
           path: ./photonvision_rubikpi3_fromTAR.tar.xz

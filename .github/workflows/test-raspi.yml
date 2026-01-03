@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./  # photonvision/photon-image-runner@HEAD
         with:
           image_url: https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2025-05-13/2025-05-13-raspios-bookworm-arm64-lite.img.xz
@@ -42,7 +42,7 @@ jobs:
         run: |
             sudo xz -T 0 -v -k ${{ steps.build_image.outputs.image }}
             
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: raspi.img.xz
           path: ${{ steps.build_image.outputs.image }}.xz
