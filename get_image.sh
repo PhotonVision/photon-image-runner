@@ -12,7 +12,9 @@ image=""
 case ${url} in
     file://* )
         echo "Using local file as image: ${url}"
-        cp "${url#file://}" ${download_path}
+        if [[ ! "${url#file://}" -ef ${download_path} ]]; then
+            cp "${url#file://}" ${download_path}
+        fi
     ;;
     http?(s)://*.yam?(l) )
         apt-get --quiet update
