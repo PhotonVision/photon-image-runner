@@ -16,7 +16,7 @@ jobs:
         with:
           image_url: https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download/v2.4.0/ubuntu-24.04-preinstalled-server-arm64-orangepi-5.img.xz
           additional_mb: 200
-          minimum_free_mb: 500
+          minimum_free_mb: 2000
           commands: |
               echo "Testing Orange Pi image"
               lsblk
