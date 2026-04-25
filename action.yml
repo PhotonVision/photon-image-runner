@@ -39,9 +39,25 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Get base image
+    - name: Set up the image directory
+      shell: bash
       run: |
-          sudo --preserve-env bash ${GITHUB_ACTION_PATH}/get_image.sh ${{ inputs.image_url }}
+        image_path="${{ runner.temp }}/image"
+        sudo mkdir --parents "${image_path}"
+        echo "image_path=${image_path}" >> "$GITHUB_ENV"
+      id: make_directory
+    
+    - name: Check cache
+      uses: actions/cache@v5
+      if: ${{ startsWith(inputs.image_url, 'http') }}
+      with:
+        key: ${{ inputs.image_url }}
+        path: ${{ steps.make_directory.outputs.image_path }}
+      id: cache_image
+
+    - name: Prepare base image
+      run: |
+          sudo --preserve-env bash ${GITHUB_ACTION_PATH}/get_image.sh ${{ inputs.image_url }} ${{ steps.cache_image.outputs.cache-hit }}
       shell: bash
       id: get_image
 
