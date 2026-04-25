@@ -34,7 +34,7 @@ else
                     [[ ${filename} = *.img.xz ]] && image="${download_path}/${filename}"
                 done < urls
             fi
-            cp "${download_path}" "${image_path}"
+            cp -r "${download_path}" "${image_path}"
             image=$(find ${image_path} -type f \( -name *.img* \) -printf "%s %p\n" | sort -n | tail -1 | cut -d " " -f2)
         ;;
         http?(s)://* )
@@ -43,7 +43,7 @@ else
                 echo "Downloading from ${url} to ${download}"
                 wget --no-verbose --output-document="${download}" ${url}
             fi
-            cp "${download_path}" "${image_path}"
+            cp -r "${download_path}" "${image_path}"
             image=${image_path}/$(basename ${download})
         ;;
         * )
