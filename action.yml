@@ -30,6 +30,10 @@ inputs:
     description: 'Make the output image file as small as possible'
     required: false
     default: 'yes'
+  use_cache:
+    description: 'Use the GitHub cache to store the unmodified base image'
+    required: false
+    default: 'yes'
 
 outputs:
   image:
@@ -50,7 +54,7 @@ runs:
     
     - name: Check cache
       uses: actions/cache@v5
-      if: ${{ startsWith(inputs.image_url, 'http') }}
+      if: ${{ inputs.use_cache == 'yes' && startsWith(inputs.image_url, 'http') }}
       with:
         key: ${{ inputs.image_url }}
         path: ${{ steps.make_directory.outputs.download_path }}
