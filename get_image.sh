@@ -3,7 +3,7 @@ set -euxo pipefail
 shopt -s extglob
 
 url=$1
-cached=$2
+cached="${2:='false'}"
 
 image=""
 

@@ -58,7 +58,7 @@ runs:
 
     - name: Prepare base image
       run: |
-          sudo --preserve-env bash ${GITHUB_ACTION_PATH}/get_image.sh ${{ inputs.image_url }} ${{ steps.cache_image.outputs.cache-hit }}
+          sudo --preserve-env bash ${GITHUB_ACTION_PATH}/get_image.sh ${{ inputs.image_url }} "${{ steps.cache_image.outputs.cache-hit }}"
       shell: bash
       id: get_image
 
