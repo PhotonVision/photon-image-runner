@@ -43,7 +43,7 @@ runs:
       shell: bash
       run: |
         download_path="${{ runner.temp }}/download"
-        sudo mkdir --parents "${download_path}"
+        mkdir --parents "${download_path}"
         echo "download_path=${download_path}" >> "$GITHUB_ENV"
         echo "download_path=${download_path}" >> "$GITHUB_OUTPUT"
       id: make_directory
@@ -58,7 +58,7 @@ runs:
 
     - name: Prepare base image
       run: |
-          sudo --preserve-env bash ${GITHUB_ACTION_PATH}/get_image.sh ${{ inputs.image_url }} "${{ steps.cache_image.outputs.cache-hit }}"
+          bash ${GITHUB_ACTION_PATH}/get_image.sh ${{ inputs.image_url }} "${{ steps.cache_image.outputs.cache-hit }}"
       shell: bash
       id: get_image
 
