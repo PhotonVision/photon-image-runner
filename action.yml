@@ -42,10 +42,10 @@ runs:
     - name: Set up the image directory
       shell: bash
       run: |
-        image_path="${{ runner.temp }}/image"
-        sudo mkdir --parents "${image_path}"
-        echo "image_path=${image_path}" >> "$GITHUB_ENV"
-        echo "image_path=${image_path}" >> "$GITHUB_OUTPUT"
+        download_path="${{ runner.temp }}/download"
+        sudo mkdir --parents "${download_path}"
+        echo "download_path=${download_path}" >> "$GITHUB_ENV"
+        echo "download_path=${download_path}" >> "$GITHUB_OUTPUT"
       id: make_directory
     
     - name: Check cache
@@ -53,7 +53,7 @@ runs:
       if: ${{ startsWith(inputs.image_url, 'http') }}
       with:
         key: ${{ inputs.image_url }}
-        path: ${{ steps.make_directory.outputs.image_path }}
+        path: ${{ steps.make_directory.outputs.download_path }}
       id: cache_image
 
     - name: Prepare base image

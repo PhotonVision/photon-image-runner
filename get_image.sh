@@ -5,46 +5,53 @@ shopt -s extglob
 url=$1
 cached=$2
 
+
 image=""
 
-case ${url} in
-    file://* )
-        echo "Using local file as image: ${url}"
-        image="${url#file://}"
-    ;;
-    http?(s)://*.yam?(l) )
-        if [[ ${cached} == 'true' ]]; then
-            image=find ${image_path} -name *.img* -printf "%s %p\n" | sort -n | tail -1 | cut -d " " -f2
-        else
-            apt-get --quiet update
-            apt-get --yes --quiet install yq
-            echo "Downloading manifest from ${url}"
-            wget --no-verbose --output-document="manifest.yaml" "${url}"
-            echo "=== Manifest contents ==="
-            cat manifest.yaml
-            echo "========================="
-            yq -r '.urls[] | "\(.url) \(.sha256sum)"' ./manifest.yaml > urls
-            while read -r file_url sha; do
-                filename="$(basename ${file_url})"
-                echo "Downloading: ${filename} from ${file_url}"
-                wget --no-verbose --output-document=${image_path}/${filename} ${file_url}
-                echo "$sha ${image_path}/$filename" | sha256sum -c -
-                [[ ${filename} = *.img.xz ]] && image="${image_path}/${filename}"
-            done < urls
-        fi
-    ;;
-    http?(s)://* )
-        image="${image_path}/$(basename ${url})"
-        if [[ ${cached} != 'true' ]]; then
-            echo "Downloading ${image} from ${url}"
-            wget --no-verbose --output-document="${image}" ${url}
-        fi
-    ;;
-    * )
-        echo "Unrecognized image source ${url}. Exiting!"
-        exit 1
-    ;;
-esac
+if [[ ${url} == file* ]]; then
+    image="${url#file://}"
+    image_path="$(dirname ${image})"
+    echo "Using local file as image: ${url}"
+else
+    image_path="${RUNNER_TEMP}/image"
+    mkdir --parent "${image_path}"
+    case ${url} in
+        http?(s)://*.yam?(l) )
+            if [[ ${cached} != 'true' ]]; then
+                apt-get --quiet update
+                apt-get --yes --quiet install yq
+                echo "Downloading manifest from ${url}"
+                wget --no-verbose --output-document="manifest.yaml" "${url}"
+                echo "=== Manifest contents ==="
+                cat manifest.yaml
+                echo "========================="
+                yq -r '.urls[] | "\(.url) \(.sha256sum)"' ./manifest.yaml > urls
+                while read -r file_url sha; do
+                    filename="$(basename ${file_url})"
+                    echo "Downloading: ${filename} from ${file_url}"
+                    wget --no-verbose --output-document=${download_path}/${filename} ${file_url}
+                    echo "$sha ${download_path}/$filename" | sha256sum -c -
+                    [[ ${filename} = *.img.xz ]] && image="${download_path}/${filename}"
+                done < urls
+            fi
+            cp "${download_path}" "${image_path}"
+            image=$(find ${image_path} -type f \( -name *.img* \) -printf "%s %p\n" | sort -n | tail -1 | cut -d " " -f2)
+        ;;
+        http?(s)://* )
+            download="${download_path}/$(basename ${url})"
+            if [[ ${cached} != 'true' ]]; then
+                echo "Downloading from ${url} to ${download}"
+                wget --no-verbose --output-document="${download}" ${url}
+            fi
+            cp "${download_path}" "${image_path}"
+            image=${image_path}/$(basename ${download})
+        ;;
+        * )
+            echo "Unrecognized image source ${url}. Exiting!"
+            exit 1
+        ;;
+    esac
+fi
 
 echo "Image: ${image}"
 ls -la ${image_path}
@@ -70,4 +77,5 @@ if [[ ${image} != *.img ]]; then
     exit 1
 fi
 
+echo "image_path=${image_path}" >> "$GITHUB_ENV"
 echo "image=${image}" >> "$GITHUB_OUTPUT"
