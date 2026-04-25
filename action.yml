@@ -52,7 +52,7 @@ runs:
       if: ${{ startsWith(inputs.image_url, 'http') }}
       with:
         key: ${{ inputs.image_url }}
-        path: ${{ steps.make_directory.outputs.image_path }}
+        path: ${{ github.env.image_path }}
       id: cache_image
 
     - name: Prepare base image
