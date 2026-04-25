@@ -33,7 +33,7 @@ inputs:
   use_cache:
     description: 'Use the GitHub cache to store the unmodified base image'
     required: false
-    default: 'yes'
+    default: 'no'
 
 outputs:
   image:
