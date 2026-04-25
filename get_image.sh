@@ -18,8 +18,8 @@ else
     case ${url} in
         http?(s)://*.yam?(l) )
             if [[ ${cached} != 'true' ]]; then
-                apt-get --quiet update
-                apt-get --yes --quiet install yq
+                sudo apt-get --quiet update
+                sudo apt-get --yes --quiet install yq
                 echo "Downloading manifest from ${url}"
                 wget --no-verbose --output-document="manifest.yaml" "${url}"
                 echo "=== Manifest contents ==="
