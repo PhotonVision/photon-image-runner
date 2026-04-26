@@ -3,7 +3,7 @@ description: 'Action to modify an os image, targeted at coprocessor images for P
 
 inputs:
   image_url:
-    description: 'The url for the base image. If it is a local file, provide the file path'
+    description: 'The url for the base image. For local files, provide the file path as a "file:\\" url'
     required: true
     default: ''
   additional_mb:
@@ -19,7 +19,7 @@ inputs:
     required: true
     default: 'echo "No commands provided"'
   boot_partition:
-    description: 'Partition number for boot, will be mounted at /boot'
+    description: '[DEPRECATED] Partition number for boot, will be mounted at /boot'
     required: false
     default: '1'
   root_location:
@@ -37,7 +37,7 @@ inputs:
 
 outputs:
   image:
-    description: 'Path to modified image'
+    description: 'Absolute path to modified image'
     value: ${{ steps.get_image.outputs.image }}
 
 runs:
