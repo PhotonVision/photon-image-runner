@@ -60,7 +60,7 @@ jobs:
             sudo find ${tardir} -mindepth 1 -type d -empty -delete
             echo "After cleanup contents of tardir: ${tardir}"
             ls -la ${tardir}
-            sudo tar -I 'zstdmt -10' -cf ./photonvision_rubikpi3_fromYAML.tar.zst ${tardir} --checkpoint=10000 --checkpoint-action=echo='%T'
+            sudo tar -I 'zstdmt -15' -cf ./photonvision_rubikpi3_fromYAML.tar.zst ${tardir} --checkpoint=10000 --checkpoint-action=echo='%T'
       - uses: actions/upload-artifact@v6
         with:
           name: photonvision_rubikpi3_fromYAML.tar.zst
