@@ -77,5 +77,5 @@ if [[ ${image} != *.img ]]; then
     exit 1
 fi
 
-sudo echo "image_path=${image_path}" >> "$GITHUB_OUTPUT"
-sudo echo "image=${image}" >> "$GITHUB_OUTPUT"
+echo "image_path=${image_path}" >> "$GITHUB_OUTPUT"
+echo "image=${image}" >> "$GITHUB_OUTPUT"
