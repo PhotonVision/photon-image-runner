@@ -27,11 +27,11 @@ jobs:
         id: build_image
       - name: Compress image
         run: |
-            sudo xz -T 0 -v -k ${{ steps.build_image.outputs.image }}
+            sudo zstd -T0 -v -k ${{ steps.build_image.outputs.image }}
             
       - uses: actions/upload-artifact@v6
         with:
-          name: opi5.img.xz
+          name: opi5.img.zst
           path: ${{ steps.build_image.outputs.image }}.xz
           compression-level: 0
           if-no-files-found: error
