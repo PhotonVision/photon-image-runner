@@ -91,7 +91,7 @@ runs:
 
           sudo chmod +x "${scriptdir}/commands.sh"
           sudo --preserve-env chroot "${{ env.rootdir }}" bash -c "${chroot_scriptdir}/commands.sh"
-          sudo rm "${chroot_scriptdir}/commands.sh"
+          sudo rm "${scriptdir}/commands.sh"
       shell: bash
       id: run_commands
 
