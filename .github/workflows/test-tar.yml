@@ -50,7 +50,7 @@ jobs:
 
       - name: Compress image
         run: |
-            imagedir=${{ steps.test_download_image.outputs.image_path }}
+            imagedir=$(dirname ${{ steps.test_download_image.outputs.image }})
             echo "Imagedir: ${imagedir}"
             ls -la ${imagedir}
             tardir=photonvision_rubikpi3_fromTAR

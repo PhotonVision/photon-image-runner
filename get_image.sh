@@ -5,6 +5,7 @@ shopt -s extglob
 url=$1
 cached=$2
 
+
 image=""
 
 if [[ ${url} == file* ]]; then
@@ -64,7 +65,6 @@ fi
 if [[ ${image} = *.tar ]]; then
     echo "Untarring ${image}"
     tar -C ${image_path} -xf ${image}
-    # ls ${image_path}
     rm ${image}
     image=$(find ${image_path} -type f \( -name *.img \) -printf "%s %p\n" | sort -n | tail -1 | cut -d " " -f2)
 fi
@@ -77,5 +77,5 @@ if [[ ${image} != *.img ]]; then
     exit 1
 fi
 
-echo "image_path=${image_path}" >> "$GITHUB_OUTPUT"
+echo "image_path=${image_path}" >> "$GITHUB_ENV"
 echo "image=${image}" >> "$GITHUB_OUTPUT"
