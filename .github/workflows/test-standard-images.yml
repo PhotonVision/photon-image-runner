@@ -21,7 +21,8 @@ jobs:
           - name: OrangePi
             base_image: https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download/v2.4.0/ubuntu-24.04-preinstalled-server-arm64-orangepi-5.img.xz  
     steps:
-      # - uses: actions/checkout@v6
+      - uses: actions/checkout@v6
+      
       - name: Test using downloaded (cached) image
         uses: ./  # photonvision/photon-image-runner@HEAD
         with:
