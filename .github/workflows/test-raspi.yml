@@ -40,12 +40,12 @@ jobs:
 
       - name: Compress image
         run: |
-            sudo xz -T 0 -v -k ${{ steps.build_image.outputs.image }}
+            sudo zstdmt -v -k ${{ steps.build_image.outputs.image }}
             
       - uses: actions/upload-artifact@v6
         with:
-          name: raspi.img.xz
-          path: ${{ steps.build_image.outputs.image }}.xz
+          name: raspi.img.zst
+          path: ${{ steps.build_image.outputs.image }}.zst
           compression-level: 0
           if-no-files-found: error
           retention-days: 1

@@ -54,11 +54,11 @@ jobs:
             sudo mv ${imagedir}/* ${tardir}/
             echo "After move"
             ls -la ${tardir}
-            sudo tar -I 'xz -T0' -cf ./photonvision_rubikpi3_fromTAR.tar.xz ${tardir} --checkpoint=10000 --checkpoint-action=echo='%T'
+            sudo tar -I 'zstdmt' -cf ./photonvision_rubikpi3_fromTAR.tar.zst ${tardir} --checkpoint=10000 --checkpoint-action=echo='%T'
       - uses: actions/upload-artifact@v6
         with:
-          name: photonvision_rubikpi3_fromTAR.tar.xz
-          path: ./photonvision_rubikpi3_fromTAR.tar.xz
+          name: photonvision_rubikpi3_fromTAR.tar.zst
+          path: ./photonvision_rubikpi3_fromTAR.tar.zst
           compression-level: 0
           if-no-files-found: error
           retention-days: 1
