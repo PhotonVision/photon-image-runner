@@ -31,7 +31,7 @@ jobs:
             
       - uses: actions/upload-artifact@v6
         with:
-          name: raspi.img.xz
+          name: opi5.img.xz
           path: ${{ steps.build_image.outputs.image }}.xz
           compression-level: 0
           if-no-files-found: error
