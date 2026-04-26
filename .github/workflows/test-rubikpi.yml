@@ -14,6 +14,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Test using downloaded (cached) image
+        id: test_download_image
         uses: ./
         with:
           image_url: https://people.canonical.com/~platform/images/qualcomm-iot/rubikpi3/ubuntu-server-24.04/x01/ubuntu-24.04-preinstalled-server-arm64+rubikpi3-20250926-145.yaml
@@ -29,9 +30,9 @@ jobs:
               echo "${loopdev}"
               touch /photon-image-modifier-was-here
               ls /
-        id: test_download_image
 
       - name: Test using image file
+        id: test_file_image
         uses: ./  # photonvision/photon-image-runner@HEAD
         with:
           image_url: "file://${{ steps.test_download_image.outputs.image }}"
@@ -46,7 +47,6 @@ jobs:
               echo "${loopdev}"
               touch /photon-image-modifier-file-was-here
               ls /
-          id: test_file_image
 
       - name: Compress image
         run: |
@@ -68,6 +68,7 @@ jobs:
             echo "After cleanup contents of tardir: ${tardir}"
             ls -la ${tardir}
             sudo tar -I 'zstdmt -10' -cf ./photonvision_rubikpi3_fromYAML.tar.zst ${tardir} --checkpoint=10000 --checkpoint-action=echo='%T'
+
       - uses: actions/upload-artifact@v6
         with:
           name: photonvision_rubikpi3_fromYAML.tar.zst

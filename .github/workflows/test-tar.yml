@@ -14,7 +14,8 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Test using downloaded (cached) image
-        uses: ./
+        id: test_download_image
+        uses: ./  # photonvision/photon-image-runner@HEAD
         with:
           image_url: https://github.com/PhotonVision/photon-image-modifier/releases/download/v2027.0.0/photonvision_rubikpi3.tar.xz
           minimum_free_mb: 2000
@@ -29,9 +30,9 @@ jobs:
               echo "${loopdev}"
               touch /photon-image-modifier-was-here
               ls /
-        id: test_download_image
 
       - name: Test using image file
+        id: test_file_image
         uses: ./  # photonvision/photon-image-runner@HEAD
         with:
           image_url: "file://${{ steps.test_download_image.outputs.image }}"
@@ -46,7 +47,6 @@ jobs:
               echo "${loopdev}"
               touch /photon-image-modifier-file-was-here
               ls /
-          id: test_file_image
 
       - name: Compress image
         run: |

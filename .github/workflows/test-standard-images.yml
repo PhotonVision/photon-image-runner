@@ -20,10 +20,12 @@ jobs:
             base_image: https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2025-05-13/2025-05-13-raspios-bookworm-arm64-lite.img.xz      
           - name: OrangePi
             base_image: https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download/v2.4.0/ubuntu-24.04-preinstalled-server-arm64-orangepi-5.img.xz  
+
     steps:
       - uses: actions/checkout@v6
-      
+
       - name: Test using downloaded (cached) image
+        id: test_download_image
         uses: ./  # photonvision/photon-image-runner@HEAD
         with:
           image_url: "${{ matrix.base_image }}"
@@ -38,9 +40,9 @@ jobs:
               echo "${loopdev}"
               touch /photon-image-modifier-was-here
               ls /
-        id: test_download_image
 
       - name: Test using image file
+        id: test_file_image
         uses: ./  # photonvision/photon-image-runner@HEAD
         with:
           image_url: "file://${{ steps.test_download_image.outputs.image }}"
@@ -53,7 +55,6 @@ jobs:
               lsblk
               touch /photon-image-modifier-file-was-here
               ls /
-        id: test_file_image
 
       - name: Compress image
         run: |
