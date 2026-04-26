@@ -66,7 +66,7 @@ if [[ ${image} = *.tar ]]; then
     echo "Untarring ${image}"
     tar -xf ${image}
     rm ${image}
-    image=$(find . -type f \( -name '*.img' \) -exec ls -s {} + 2>/dev/null | sort -rn | head -n1 | awk '{print $2}')
+    image=$(find ${image_path} -type f \( -name *.img \) -printf "%s %p\n" | sort -n | tail -1 | cut -d " " -f2)
 fi
 
 echo "Image: ${image}"
