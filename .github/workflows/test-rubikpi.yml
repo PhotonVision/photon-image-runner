@@ -11,39 +11,45 @@ jobs:
   build:
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v6
-      - uses: ./
+      # - uses: actions/checkout@v6
+      - name: Test using downloaded (cached) image
+        uses: ./
         with:
           image_url: https://people.canonical.com/~platform/images/qualcomm-iot/rubikpi3/ubuntu-server-24.04/x01/ubuntu-24.04-preinstalled-server-arm64+rubikpi3-20250926-145.yaml
           minimum_free_mb: 2000
           root_location: "offset=569376768"
           shrink_image: "no"
+          use_cache: "yes"
           boot_partition: ""
           commands: |
-              echo "Testing Rubik Pi image"
+              echo "Testing Rubik Pi image from .yaml"
               uname -a
               lsblk
               echo "${loopdev}"
-        id: build_image
+              touch /photon-image-modifier-was-here
+              ls /
+        id: test_download_image
 
       - name: Test using image file
         uses: ./  # photonvision/photon-image-runner@HEAD
         with:
-          image_url: "file://${{ steps.build_image.outputs.image }}"
+          image_url: "file://${{ steps.test_download_image.outputs.image }}"
           root_location: "offset=569376768"
           shrink_image: "no"
+          use_cache: "yes"
           boot_partition: ""
           commands: |
               echo "Testing file access Rubik Pi image"
               uname -a
               lsblk
-              echo "/boot contents:"
-              ls -la /boot
-              touch /boot/photon-image-modifier-file-was-here
+              echo "${loopdev}"
+              touch /photon-image-modifier-file-was-here
+              ls /
+          id: test_file_image
 
       - name: Compress image
         run: |
-            imagedir=$(dirname ${{ steps.build_image.outputs.image }})
+            imagedir=${{ steps.test_download_image.outputs.image_path }}
             tardir=photonvision_rubikpi3_fromYAML
             mkdir --parents ${tardir}
             echo "Contents of imagedir: ${imagedir}"

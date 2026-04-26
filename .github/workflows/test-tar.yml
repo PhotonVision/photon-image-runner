@@ -11,40 +11,45 @@ jobs:
   build:
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v6
-      - uses: ./
+      # - uses: actions/checkout@v6
+      - name: Test using downloaded (cached) image
+        uses: ./
         with:
           image_url: https://github.com/PhotonVision/photon-image-modifier/releases/download/v2027.0.0/photonvision_rubikpi3.tar.xz
           minimum_free_mb: 2000
           root_location: "offset=569376768"
+          boot_partition: ""
           shrink_image: "no"
+          use_cache: "yes"
           commands: |
               echo "Testing Rubik Pi tar image"
               uname -a
               lsblk
               echo "${loopdev}"
-              echo "/boot contents:"
-              ls -la /boot
-        id: build_image
+              touch /photon-image-modifier-was-here
+              ls /
+        id: test_download_image
 
       - name: Test using image file
         uses: ./  # photonvision/photon-image-runner@HEAD
         with:
-          image_url: "file://${{ steps.build_image.outputs.image }}"
+          image_url: "file://${{ steps.test_download_image.outputs.image }}"
           root_location: "offset=569376768"
-          shrink_image: "no"
           boot_partition: ""
+          shrink_image: "no"
+          use_cache: "yes"
           commands: |
               echo "Testing file access Rubik Pi tar image"
               uname -a
               lsblk
-              echo "/boot contents:"
-              ls -la /boot
-              touch /boot/photon-image-modifier-file-was-here
+              echo "${loopdev}"
+              touch /photon-image-modifier-file-was-here
+              ls /
+          id: test_file_image
 
       - name: Compress image
         run: |
-            imagedir=$(dirname ${{ steps.build_image.outputs.image }})
+            imagedir=${{ steps.test_download_image.outputs.image_path }}
             echo "Imagedir: ${imagedir}"
             ls -la ${imagedir}
             tardir=photonvision_rubikpi3_fromTAR
@@ -55,6 +60,7 @@ jobs:
             echo "After move"
             ls -la ${tardir}
             sudo tar -I 'zstdmt -10' -cf ./photonvision_rubikpi3_fromTAR.tar.zst ${tardir} --checkpoint=10000 --checkpoint-action=echo='%T'
+
       - uses: actions/upload-artifact@v6
         with:
           name: photonvision_rubikpi3_fromTAR.tar.zst
