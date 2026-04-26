@@ -57,9 +57,10 @@ part_type=$(blkid -o value -s PTTYPE "${loopdev}")
 echo "part_type=${part_type}" >> "$GITHUB_ENV"
 echo "Image is using ${part_type:=NO} partition table"
 
-rootdir="./rootfs"
+rootdir=${RUNNER_TEMP}/rootfs
 rootdir="$(realpath ${rootdir})"
 mkdir --parents ${rootdir}
+sync
 
 if [[ ${minimum_free} -gt 0 ]]; then
     mount "${rootdev}" "${rootdir}"
