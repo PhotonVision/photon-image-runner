@@ -40,7 +40,7 @@ jobs:
 
       - name: Compress image
         run: |
-            sudo zstdmt -15 -v -k ${{ steps.build_image.outputs.image }}
+            sudo zstdmt -10 -v -k ${{ steps.build_image.outputs.image }}
             
       - uses: actions/upload-artifact@v6
         with:
