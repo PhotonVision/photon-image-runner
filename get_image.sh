@@ -64,7 +64,8 @@ fi
 
 if [[ ${image} = *.tar ]]; then
     echo "Untarring ${image}"
-    tar -xf ${image}
+    tar -C ${image_path} -xf ${image}
+    ls ${image_path}
     rm ${image}
     image=$(find ${image_path} -type f \( -name *.img \) -printf "%s %p\n" | sort -n | tail -1 | cut -d " " -f2)
 fi
