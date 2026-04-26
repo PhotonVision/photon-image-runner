@@ -8,19 +8,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-24.04-arm
     strategy:
       fail-fast: false
       matrix: 
         include:
-          - name: RasperryPi_1
+          - name: RaspberryPi_1
             base_image: https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2025-05-13/2025-05-13-raspios-bookworm-arm64-lite.img.xz
-          - name: RasperryPi_2
+          - name: RaspberryPi_2
             base_image: https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2025-05-13/2025-05-13-raspios-bookworm-arm64-lite.img.xz      
           - name: OrangePi
             base_image: https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download/v2.4.0/ubuntu-24.04-preinstalled-server-arm64-orangepi-5.img.xz  
 
+    name: Test ${{ matrix.name }}
     steps:
       - uses: actions/checkout@v6
 
