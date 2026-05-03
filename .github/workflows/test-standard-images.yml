@@ -1,0 +1,72 @@
+name: 'Test modifying standard images'
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04-arm
+    strategy:
+      fail-fast: false
+      matrix: 
+        include:
+          - name: RaspberryPi_1
+            base_image: https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2025-05-13/2025-05-13-raspios-bookworm-arm64-lite.img.xz
+          - name: RaspberryPi_2
+            base_image: https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2025-05-13/2025-05-13-raspios-bookworm-arm64-lite.img.xz      
+          - name: OrangePi
+            base_image: https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download/v2.4.0/ubuntu-24.04-preinstalled-server-arm64-orangepi-5.img.xz  
+
+    name: Test ${{ matrix.name }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Test using downloaded (cached) image
+        id: test_download_image
+        uses: ./  # photonvision/photon-image-runner@HEAD
+        with:
+          image_url: "${{ matrix.base_image }}"
+          additional_mb: 200
+          minimum_free_mb: 500
+          boot_partition: ""
+          use_cache: "yes"
+          commands: |
+              echo "Testing $(basename ${{ matrix.base_image }}) image"
+              uname -a
+              lsblk
+              echo "${loopdev}"
+              touch /photon-image-modifier-was-here
+              ls /
+
+      - name: Test using image file
+        id: test_file_image
+        uses: ./  # photonvision/photon-image-runner@HEAD
+        with:
+          image_url: "file://${{ steps.test_download_image.outputs.image }}"
+          minimum_free_mb: 500
+          boot_partition: ""
+          use_cache: "yes"
+          commands: |
+              echo "Testing file access to ${{ steps.test_download_image.outputs.image }} image"
+              uname -a
+              lsblk
+              touch /photon-image-modifier-file-was-here
+              ls /
+
+      - name: Compress image
+        run: |
+            sudo zstdmt -10 -v -k ${{ steps.test_download_image.outputs.image }}
+            
+      - uses: actions/upload-artifact@v6
+        with:
+          name: ${{ matrix.name }}.img.zst
+          path: ${{ steps.test_download_image.outputs.image }}.zst
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 1
+
+

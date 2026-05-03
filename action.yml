@@ -3,7 +3,7 @@ description: 'Action to modify an os image, targeted at coprocessor images for P
 
 inputs:
   image_url:
-    description: 'The url for the base image. If it is a local file, provide the file path'
+    description: 'The url for the base image. For local files, provide the file path as a "file:\\" url'
     required: true
     default: ''
   additional_mb:
@@ -19,7 +19,7 @@ inputs:
     required: true
     default: 'echo "No commands provided"'
   boot_partition:
-    description: 'Partition number for boot, will be mounted at /boot'
+    description: '[DEPRECATED] Partition number for boot, will be mounted at /boot'
     required: false
     default: '1'
   root_location:
@@ -30,18 +30,39 @@ inputs:
     description: 'Make the output image file as small as possible'
     required: false
     default: 'yes'
+  use_cache:
+    description: 'Use the GitHub cache to store the unmodified base image'
+    required: false
+    default: 'no'
 
 outputs:
   image:
-    description: 'Path to modified image'
+    description: 'Absolute path to modified image'
     value: ${{ steps.get_image.outputs.image }}
 
 runs:
   using: 'composite'
   steps:
-    - name: Get base image
+    - name: Set up the image directory
+      shell: bash
       run: |
-          sudo --preserve-env bash ${GITHUB_ACTION_PATH}/get_image.sh ${{ inputs.image_url }}
+        download_path="${{ runner.temp }}/download"
+        mkdir --parents "${download_path}"
+        echo "download_path=${download_path}" >> "$GITHUB_ENV"
+        echo "download_path=${download_path}" >> "$GITHUB_OUTPUT"
+      id: make_directory
+    
+    - name: Check cache
+      uses: actions/cache@v5
+      if: ${{ inputs.use_cache == 'yes' && startsWith(inputs.image_url, 'http') }}
+      with:
+        key: ${{ inputs.image_url }}
+        path: ${{ steps.make_directory.outputs.download_path }}
+      id: cache_image
+
+    - name: Prepare base image
+      run: |
+          bash ${GITHUB_ACTION_PATH}/get_image.sh ${{ inputs.image_url }} "${{ steps.cache_image.outputs.cache-hit }}"
       shell: bash
       id: get_image
 
@@ -59,7 +80,7 @@ runs:
           sudo mkdir --parents "${scriptdir}"
           sudo mount --bind "${{ github.workspace }}" "${scriptdir}"
 
-          cat >> "${scriptdir}/commands.sh" << EOF
+          cat > "${scriptdir}/commands.sh" << EOF
           #!/bin/bash
           # set -exo pipefail
           # export SHELLOPTS
@@ -70,6 +91,7 @@ runs:
 
           sudo chmod +x "${scriptdir}/commands.sh"
           sudo --preserve-env chroot "${{ env.rootdir }}" bash -c "${chroot_scriptdir}/commands.sh"
+          sudo rm "${scriptdir}/commands.sh"
       shell: bash
       id: run_commands
 
