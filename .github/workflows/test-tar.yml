@@ -20,7 +20,6 @@ jobs:
           image_url: https://github.com/PhotonVision/photon-image-modifier/releases/download/v2027.0.0/photonvision_rubikpi3.tar.xz
           minimum_free_mb: 2000
           root_location: "offset=569376768"
-          boot_partition: ""
           shrink_image: "no"
           use_cache: "yes"
           commands: |
@@ -37,7 +36,6 @@ jobs:
         with:
           image_url: "file://${{ steps.test_download_image.outputs.image }}"
           root_location: "offset=569376768"
-          boot_partition: ""
           shrink_image: "no"
           use_cache: "yes"
           commands: |

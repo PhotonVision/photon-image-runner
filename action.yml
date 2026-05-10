@@ -18,10 +18,6 @@ inputs:
     description: 'The commands to run in the image'
     required: true
     default: 'echo "No commands provided"'
-  boot_partition:
-    description: '[DEPRECATED] Partition number for boot, will be mounted at /boot'
-    required: false
-    default: '1'
   root_location:
     description: 'Location of the root as either "partition=X" or "offset=XXX"'
     required: false
@@ -68,7 +64,7 @@ runs:
 
     - name: Mount image
       run: |
-          sudo --preserve-env bash "${GITHUB_ACTION_PATH}/mount_image.sh" "${{ steps.get_image.outputs.image }}" "${{ inputs.additional_mb }}" "${{ inputs.minimum_free_mb }}" "${{ inputs.root_location }}" "${{ inputs.boot_partition }}"
+          sudo --preserve-env bash "${GITHUB_ACTION_PATH}/mount_image.sh" "${{ steps.get_image.outputs.image }}" "${{ inputs.additional_mb }}" "${{ inputs.minimum_free_mb }}" "${{ inputs.root_location }}"
       shell: bash
       id: mount_image
 
