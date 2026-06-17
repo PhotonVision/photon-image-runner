@@ -32,7 +32,6 @@ jobs:
           image_url: "${{ matrix.base_image }}"
           additional_mb: 200
           minimum_free_mb: 500
-          boot_partition: ""
           use_cache: "yes"
           commands: |
               echo "Testing $(basename ${{ matrix.base_image }}) image"
@@ -48,7 +47,6 @@ jobs:
         with:
           image_url: "file://${{ steps.test_download_image.outputs.image }}"
           minimum_free_mb: 500
-          boot_partition: ""
           use_cache: "yes"
           commands: |
               echo "Testing file access to ${{ steps.test_download_image.outputs.image }} image"

@@ -22,7 +22,6 @@ jobs:
           root_location: "offset=569376768"
           shrink_image: "no"
           use_cache: "yes"
-          boot_partition: ""
           commands: |
               echo "Testing Rubik Pi image from .yaml"
               uname -a
@@ -39,7 +38,6 @@ jobs:
           root_location: "offset=569376768"
           shrink_image: "no"
           use_cache: "yes"
-          boot_partition: ""
           commands: |
               echo "Testing file access Rubik Pi image"
               uname -a
